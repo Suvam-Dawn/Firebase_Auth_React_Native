@@ -17,15 +17,25 @@ export default class SplashScreen extends React.Component {
     if (isGSignedIn) {
       const firebaseUser = await firebase.auth().currentUser;
       var userData = firebaseUser._user;
-      console.log(userData.metadata);
       this.props.navigation.replace("DetailsScreen", {
         status: "G-Login",
         user: userData
       });
     } else {
-      setTimeout(() => {
-        this.props.navigation.replace("LoginScreen");
-      }, 500);
+      const pageProps = this.props;
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          var userData = user._user;
+          pageProps.navigation.replace("DetailsScreen", {
+            status: "Phone-Login",
+            user: userData
+          });
+        } else {
+          setTimeout(() => {
+            pageProps.navigation.replace("LoginScreen");
+          }, 500);
+        }
+      });
     }
   };
   render() {

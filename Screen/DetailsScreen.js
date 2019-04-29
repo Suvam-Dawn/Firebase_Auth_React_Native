@@ -12,11 +12,22 @@ export default class SplashScreen extends React.Component {
   }
   componentDidMount = async () => {};
   _logout = async () => {
+    var navigate = this;
     if (this.props.navigation.state.params.status === "G-Login") {
       GoogleSignin.configure();
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
-      var navigate = this;
+
+      firebase
+        .auth()
+        .signOut()
+        .then(function() {
+          navigate.props.navigation.replace("LoginScreen");
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    } else if (this.props.navigation.state.params.status === "Phone-Login") {
       firebase
         .auth()
         .signOut()
@@ -29,7 +40,6 @@ export default class SplashScreen extends React.Component {
     }
   };
   render() {
-    console.log(this.props.navigation.state.params.user);
     return (
       <View style={styles.container}>
         {this.props.navigation.state.params.status === "G-Login" ? (
@@ -55,6 +65,21 @@ export default class SplashScreen extends React.Component {
             <Text>
               Name:
               {this.props.navigation.state.params.user.displayName}
+            </Text>
+            <Text>
+              UID:
+              {this.props.navigation.state.params.user.uid}
+            </Text>
+          </View>
+        ) : this.props.navigation.state.params.status === "Phone-Login" ? (
+          <View style={styles.container}>
+            <Text>
+              Creation Time:
+              {this.props.navigation.state.params.user.metadata.creationTime}
+            </Text>
+            <Text>
+              Last SignIn Time:
+              {this.props.navigation.state.params.user.metadata.lastSignInTime}
             </Text>
             <Text>
               UID:
