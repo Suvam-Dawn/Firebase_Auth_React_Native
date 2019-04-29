@@ -5,17 +5,22 @@ import {
   GoogleSigninButton,
   statusCodes
 } from "react-native-google-signin";
+import firebase from "react-native-firebase";
 export default class SplashScreen extends React.Component {
   constructor(props) {
     super(props);
   }
   componentDidMount = async () => {
+    GoogleSignin.configure();
+    await GoogleSignin.hasPlayServices();
     const isGSignedIn = await GoogleSignin.isSignedIn();
     if (isGSignedIn) {
-      const currentUser = await GoogleSignin.getCurrentUser();
+      const firebaseUser = await firebase.auth().currentUser;
+      var userData = firebaseUser._user;
+      console.log(userData.metadata);
       this.props.navigation.replace("DetailsScreen", {
         status: "G-Login",
-        user: currentUser.user
+        user: userData
       });
     } else {
       setTimeout(() => {

@@ -5,6 +5,7 @@ import {
   GoogleSigninButton,
   statusCodes
 } from "react-native-google-signin";
+import firebase from "react-native-firebase";
 export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -16,10 +17,22 @@ export default class LoginScreen extends React.Component {
     try {
       GoogleSignin.configure();
       await GoogleSignin.hasPlayServices();
-      
-      const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo);
-      this.setState({ userInfo });
+
+      const data = await GoogleSignin.signIn();
+      // create a new firebase credential with the token
+      const credential = firebase.auth.GoogleAuthProvider.credential(
+        data.idToken,
+        data.accessToken
+      );
+      // login with credential
+      const firebaseUserCredential = await firebase
+        .auth()
+        .signInWithCredential(credential);
+      var userData = firebaseUserCredential.user;
+      this.props.navigation.replace("DetailsScreen", {
+        status: "G-Login",
+        user: userData
+      });
     } catch (error) {
       console.log(error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {

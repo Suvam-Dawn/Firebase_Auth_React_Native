@@ -3,6 +3,7 @@ package com.firebase_auth_react_native;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -28,7 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new RNFirebasePackage(),
             new RNGoogleSigninPackage(),
-            new RNGestureHandlerPackage()
+            new RNGestureHandlerPackage(),
+            new RNFirebaseAuthPackage()
       );
     }
 
